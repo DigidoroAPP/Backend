@@ -1,6 +1,8 @@
 import { errorCodes } from "../utils/errors/error.code.js";
 import { ServiceError } from "../errors/servise.error.js";
 import * as todoRepository from "../repositories/todo.respository.js";
+import { getUserById } from "./user.service.js";
+
 
 export const createTodo = async (todo) => {
   try {
@@ -41,6 +43,9 @@ export const getAllTodos = async () => {
 
 export const getTodosByUserId = async (userId) => {
   try {
+    const existUser = await getUserById(userId);
+    if (!existUser) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
     const todos = await todoRepository.getTodoByUserId(userId);
     return todos || [];
   } catch (e) {

@@ -1,5 +1,6 @@
 import createHttpError from "http-errors";
 import * as TodoService from "../services/todo.service.js";
+import { addTodoUser } from "../services/user.service.js";
 import { errorCodes } from "../utils/errors/error.code.js";
 
 export const createTodo = async (req, res, next) => {
@@ -8,6 +9,7 @@ export const createTodo = async (req, res, next) => {
     todo.id_user = req.user.id;
     
     const newTodo = await TodoService.createTodo(todo);
+    await addTodoUser(req.user.id, newTodo.id);
     res.status(201).send(newTodo);
   } catch (e) {
     next(createHttpError(500, "Create todo error"));
@@ -35,7 +37,7 @@ export const getTodoById = async (req, res, next) => {
 
 export const getTodosByUser = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const todos = await TodoService.getTodosByUserId(userId);
     res.status(200).send(todos);
   } catch (e) {

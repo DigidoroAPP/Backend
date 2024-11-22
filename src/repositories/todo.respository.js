@@ -14,7 +14,7 @@ export const getTodoById = async (id) => {
 };
 
 export const getTodoByUserId = async (userId) => {
-  return await Todo.find({ userId });
+  return await Todo.find({ id_user: userId });
 };
 
 export const updateTodo = async (id, todo) => {
