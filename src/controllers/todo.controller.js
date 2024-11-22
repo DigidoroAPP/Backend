@@ -61,12 +61,16 @@ export const updateTodo = async (req, res, next) => {
     const todo = await TodoService.updateTodo(todoId, data);
     res.status(200).send(todo);
   } catch (e) {
+    console.log(e);
     switch (e.code) {
       case errorCodes.TODO.TODO_NOT_FOUND:
         next(createHttpError(404, "Todo not found"));
         break;
       case errorCodes.TODO.FAILD_TO_UPDATE_TODO:
         next(createHttpError(500, "Update todo error"));
+        break;
+      case errorCodes.TODO.INVALID_TODO_STATE:
+        next(createHttpError(400, "Invalid todo state"));
         break;
       default:
         next(e);

@@ -2,6 +2,7 @@ import { errorCodes } from "../utils/errors/error.code.js";
 import { ServiceError } from "../errors/servise.error.js";
 import * as todoRepository from "../repositories/todo.respository.js";
 import { getUserById } from "./user.service.js";
+import { TODO_STATE } from "../utils/constants/todoState.utils.js";
 
 
 export const createTodo = async (todo) => {
@@ -19,7 +20,7 @@ export const createTodo = async (todo) => {
 export const getTodoById = async (todoId) => {
   try {
     const todo = await todoRepository.getTodoById(todoId);
-    if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
+    if (!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
     return todo;
   } catch (e) {
     throw new ServiceError(
@@ -44,7 +45,7 @@ export const getAllTodos = async () => {
 export const getTodosByUserId = async (userId) => {
   try {
     const existUser = await getUserById(userId);
-    if (!existUser) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+    if (!existUser) throw new ServiceError("User not found", errorCodes.USER.USER_NOT_FOUND);
 
     const todos = await todoRepository.getTodoByUserId(userId);
     return todos || [];
@@ -58,8 +59,13 @@ export const getTodosByUserId = async (userId) => {
 
 export const updateTodo = async (todoId, data) => {
   try {
+
+    if(data.state  && !Object.values(TODO_STATE).includes(data.state))
+      throw new ServiceError("Invalid todo state", errorCodes.TODO.INVALID_TODO_STATE);
+
     const todo = await todoRepository.updateTodo(todoId, data);
     if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
+
     return todo;
   } catch (e) {
     throw new ServiceError(
@@ -72,7 +78,7 @@ export const updateTodo = async (todoId, data) => {
 export const deleteTodo = async (todoId) => {
   try {
     const todo = await todoRepository.deleteTodo(todoId);
-    if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
+    if (!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
     return todo;
   } catch (e) {
     throw new ServiceError(
@@ -85,7 +91,7 @@ export const deleteTodo = async (todoId) => {
 export const patchStateTodo = async (todoId, state) => {
   try {
     const todo = await todoRepository.patchStateTodo(todoId, state);
-    if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
+    if (!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
     return todo;
   } catch (e) {
     throw new ServiceError(

@@ -1,4 +1,4 @@
-import { createTodo, getTodosByUser } from "../controllers/todo.controller.js";
+import { createTodo, getTodosByUser, updateTodo } from "../controllers/todo.controller.js";
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { createTodoValidator } from "../validators/todo.validator.js";
@@ -14,6 +14,7 @@ todoRoute.post(
   createTodo
 );
 
+todoRoute.patch("/:id", authMiddleware, updateTodo);
 todoRoute.get("/", authMiddleware, getTodosByUser);
 
 export default todoRoute;
