@@ -1,6 +1,6 @@
 import { verifyToken } from "../utils/jwt.util.js";
 import createHttpError from "http-errors";
-import { getTokenUser } from "../services/user.service.js";
+import { getTokenUser, getUserById } from "../services/user.service.js";
 import { config } from "../configs/config.js";
 
 export const authMiddleware = async (req, res, next) => {
@@ -16,13 +16,16 @@ export const authMiddleware = async (req, res, next) => {
     const payload = verifyToken(token);
     if (!payload) next(createHttpError(401, "Unauthorized"));
 
+    const user = await getUserById(payload.id);
+    if (!user) next(createHttpError(401, "User not found"));
+
     const compareToken = await getTokenUser(payload.id);
     if (!compareToken)
       return next(createHttpError(401, "User not found or logged out"));
     if (compareToken.token !== token)
       return next(createHttpError(401, "Invalid token"));
 
-    req.user = payload;
+    req.user = user;
     req.token = token;
     next();
   } catch (e) {
