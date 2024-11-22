@@ -54,11 +54,11 @@ export const getAllTodos = async (req, res, next) => {
   }
 };
 
-export const updateTodo = async (req, res, next) => {
+export const patchTodoController = async (req, res, next) => {
   try {
     const todoId = req.params.id;
     const data = req.body;
-    const todo = await TodoService.updateTodo(todoId, data);
+    const todo = await TodoService.patchTodo(todoId, data);
     res.status(200).send(todo);
   } catch (e) {
     console.log(e);

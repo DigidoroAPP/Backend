@@ -57,7 +57,7 @@ export const getTodosByUserId = async (userId) => {
   }
 };
 
-export const updateTodo = async (todoId, data) => {
+export const patchTodo = async (todoId, data) => {
   try {
 
     if(data.state  && !Object.values(TODO_STATE).includes(data.state))
