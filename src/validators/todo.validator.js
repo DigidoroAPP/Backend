@@ -27,7 +27,7 @@ export const updateTodoValidator = [
 ]
 
 export const patchTodoValidator = [
-    body('state').notEmpty().withMessage('State is required')
+    body('state').optional().notEmpty().withMessage('State is required')
     .isString().withMessage('State must be a string')
     .isIn([TODO_STATE.PENDING, TODO_STATE.COMPLETE, TODO_STATE.PROGRESS]).withMessage('State must be one of pending, complete, progress')
 ]
