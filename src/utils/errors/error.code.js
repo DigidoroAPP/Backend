@@ -8,6 +8,7 @@ export const errorCodes = {
     FAILD_TO_DELETE_USER: 1005,
     FAILD_TO_ADD_TODO: 1006,
     FAILD_TO_ADD_POMODORO: 1007,
+    FAILD_TO_GET_TOKEN:1008,
   },
   AUTH: {
     USER_NOT_FOUND: 2000,

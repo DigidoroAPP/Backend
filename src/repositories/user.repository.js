@@ -41,3 +41,7 @@ export const addToken = async(id, token)=>{
 export const addPomodoro = async(id, pomodoroId)=>{
     return await User.findByIdAndUpdate(id, {id_pomodoro: pomodoroId}, {new: true});
 }
+
+export const getToken = async(id)=>{
+    return await User.findById(id, 'token');
+}
