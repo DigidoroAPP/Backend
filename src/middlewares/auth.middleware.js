@@ -1,7 +1,7 @@
-import { verifyToken } from "../utils/jwt.util";
+import { verifyToken } from "../utils/jwt.util.js";
 import createHttpError from "http-errors";
-import { getTokenUser } from "../services/user.service";
-import { config } from "../configs/config";
+import { getTokenUser } from "../services/user.service.js";
+import { config } from "../configs/config.js";
 
 export const authMiddleware = async (req, res, next) => {
   try {
@@ -10,7 +10,7 @@ export const authMiddleware = async (req, res, next) => {
 
     const [prefix, token] = authorization.split(" ");
 
-    if (prefix !== config.prefix) next(createHttpError(401, "Unauthorized"));
+    if (prefix !== config.prefix) next(createHttpError(401, "Invalid prefix"));
     if (!token) next(createHttpError(401, "Unauthorized"));
 
     const payload = verifyToken(token);
@@ -19,7 +19,7 @@ export const authMiddleware = async (req, res, next) => {
     const compareToken = await getTokenUser(payload.id);
     if (!compareToken)
       return next(createHttpError(401, "User not found or logged out"));
-    if (compareToken !== token)
+    if (compareToken.token !== token)
       return next(createHttpError(401, "Invalid token"));
 
     req.user = payload;

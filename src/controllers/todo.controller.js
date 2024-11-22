@@ -1,11 +1,12 @@
 import createHttpError from "http-errors";
-import * as TodoService from "../services/todo.service";
-import { errorCodes } from "../utils/errors/error.code";
+import * as TodoService from "../services/todo.service.js";
+import { errorCodes } from "../utils/errors/error.code.js";
 
 export const createTodo = async (req, res, next) => {
   try {
     const todo = req.body;
-    todo.id_user = req.user._id;
+    todo.id_user = req.user.id;
+    
     const newTodo = await TodoService.createTodo(todo);
     res.status(201).send(newTodo);
   } catch (e) {
