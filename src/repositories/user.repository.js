@@ -22,6 +22,10 @@ export const updateUser = async(id, user)=>{
     return await User.findByIdAndUpdate(id, user, {new: true});
 }
 
+export const deleteToken = async(id)=>{
+    return await User.findByIdAndUpdate(id, {$set: {token: null}}, {new: true});
+}
+
 export const deleteUser = async(id)=>{
     return await User.findByIdAndDelete(id);
 }
@@ -36,4 +40,7 @@ export const addToken = async(id, token)=>{
 
 export const addPomodoro = async(id, pomodoroId, opts)=>{
     return await User.findByIdAndUpdate(id, {$set:{id_pomodoro: pomodoroId}}, {new: true, session: opts.session});
+}
+export const getToken = async(id)=>{
+    return await User.findById(id, 'token');
 }

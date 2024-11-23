@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { POMODORO_STATE } from "../utils/constants/pomodoroStates.utils";
+import { POMODORO_STATE } from "../utils/constants/pomodoroStates.utils.js";
 
 const pomodoroSchema = new Schema(
   {

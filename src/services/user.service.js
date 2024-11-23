@@ -89,3 +89,18 @@ export const addPomodoroUser = async (userId, pomodoroId, opts)=>{
         );
     }
 }
+
+export const getTokenUser = async (userId)=>{
+    try{
+        const exisUser = await userReposiry.findUserById(userId);
+        if(!exisUser) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
+        const token = await userReposiry.getToken(userId);
+        return token;
+    }catch(e){
+        throw new ServiceError(
+            "Get token error",
+            e.code || errorCodes.USER.FAILD_TO_GET_TOKEN
+        );
+    }
+}

@@ -1,29 +1,6 @@
-import { param, body } from "express-validator";
+import { param } from "express-validator";
 
-export const registerValidator = [
-    body('name').notEmpty().withMessage('Name is required')
-    .isString().withMessage('Name must be a string')
-    .isLength({min: 5}).withMessage('Name must be at least 5 characters'),
-
-    body('email').notEmpty().withMessage('Email is required')
-    .isString().withMessage('Email must be a string')
-    .isEmail().withMessage('Email must be a valid email address')
-    .normalizeEmail(),
-
-    body('password').notEmpty().withMessage('Password is required')
-    .isLength({min: 8}).withMessage('Password must be at least 8 characters')
-    
+export const idParamValidator = [
+    param('userId').notEmpty().withMessage('User ID is required')
+    .isMongoId().withMessage('User ID must be a valid mongo id')
 ]
-
-export const  loginValidator = [
-    body('email').notEmpty().withMessage('Email is required')
-    .isString().withMessage('Email must be a string')
-    .isEmail().withMessage('Email must be a valid email address')
-    .normalizeEmail(),   
-]
-
-export const logoutValidator = [
-    body('token').notEmpty().withMessage('Token is required')
-    .isString().withMessage('Token must be a string')
-]
-

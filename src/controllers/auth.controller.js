@@ -57,7 +57,7 @@ export const loginController = async (req, res, next) => {
 
 export const logoutController = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     await logout(userId);
     res.status(200).send("Logout success");
   } catch (e) {
@@ -68,5 +68,15 @@ export const logoutController = async (req, res, next) => {
       default:
         next(e);
     }
+  }
+};
+
+export const meController = async (req, res, next) => {
+  try {
+    const { id, email, name } = req.user;
+    res.status(200).send({ id, email, name });
+    const todo = req.user.id;
+  } catch (e) {
+    next(createHttpError(500, "Get user error"));
   }
 };
