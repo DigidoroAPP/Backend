@@ -41,28 +41,46 @@ export const existUserByEmail = async (email) => {
 }
 
 export const updateUser =async(userId, data)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try{
-        const user = await userReposiry.updateUser(userId, data);
+        const opts = {session};
+        const user = await userReposiry.updateUser(userId, data, opts);
         if(!user) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
+        await session.commitTransaction();
         return user;
     }catch(e){
+        await session.abortTransaction
         throw new ServiceError(
             "Update user error",
             e.code || errorCodes.USER.FAILD_TO_UPDATE_USER
         );
+    }finally{
+        await session.endSession();
     }
 }
 
 export const deleteUser = async (userId)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try{
-        const user = await userReposiry.deleteUser(userId);
+        const opts = {session};
+        const user = await userReposiry.deleteUser(userId, opts);
         if(!user) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
+        await session.commitTransaction();
         return user;
     }catch(e){
+        await session.abortTransaction();
         throw new ServiceError(
             "Delete user error",
             e.code || errorCodes.USER.FAILD_TO_DELETE_USER
         );
+    }finally{
+        await session.endSession();
     }
 }
 

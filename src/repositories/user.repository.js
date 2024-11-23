@@ -18,8 +18,8 @@ export const findUserByEmail = async(email)=>{
     return await User.findOne({email});
 }
 
-export const updateUser = async(id, user)=>{
-    return await User.findByIdAndUpdate(id, user, {new: true});
+export const updateUser = async(id, user, opts)=>{
+    return await User.findByIdAndUpdate(id, user, {new: true, opts});
 }
 
 export const deleteToken = async(id, opts)=>{
