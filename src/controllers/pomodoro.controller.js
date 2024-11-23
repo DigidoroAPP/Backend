@@ -60,30 +60,30 @@ export const updatePomodoro = async (req, res, next) => {
   }
 };
 
-export const deletePomodoro = async (req, res, next) => {
-  try {
-    const pomodoroId = req.params.id;
-    const pomodoro = await PomodoroService.deletePomodoro(pomodoroId);
-    res.status(200).send(pomodoro);
-  } catch (e) {
-    switch (e.code) {
-      case errorCodes.POMODORO.POMODORO_NOT_FOUND:
-        next(createHttpError(404, "Pomodoro not found"));
-        break;
-      case errorCodes.POMODORO.FAILD_TO_DELETE_POMODORO:
-        next(createHttpError(500, "Delete pomodoro error"));
-        break;
-      default:
-        next(e);
-    }
-  }
-};
+// export const deletePomodoro = async (req, res, next) => {
+//   try {
+//     const pomodoroId = req.params.id;
+//     const pomodoro = await PomodoroService.deletePomodoro(pomodoroId);
+//     res.status(200).send(pomodoro);
+//   } catch (e) {
+//     switch (e.code) {
+//       case errorCodes.POMODORO.POMODORO_NOT_FOUND:
+//         next(createHttpError(404, "Pomodoro not found"));
+//         break;
+//       case errorCodes.POMODORO.FAILD_TO_DELETE_POMODORO:
+//         next(createHttpError(500, "Delete pomodoro error"));
+//         break;
+//       default:
+//         next(e);
+//     }
+//   }
+// };
 
 export const patchTodoInPomodoro = async (req, res, next) => {
   try {
     const pomodoroId = req.params.id;
     const todoId = req.body.todoId;
-    const pomodoro = await PomodoroService.patchTodoInPomodoro(
+    const pomodoro = await PomodoroService.addTodoInPomodoro(
       pomodoroId,
       todoId
     );

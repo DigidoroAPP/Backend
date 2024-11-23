@@ -20,7 +20,7 @@ userRoute.get(
   getAllUsersController
 );
 userRoute.get(
-  "/:userId",
+  "/id/:userId",
   idParamValidator,
   runValidation,
   authMiddleware,
@@ -32,6 +32,6 @@ userRoute.get(
   getUserByIdController
 );
 
-userRoute.get("/profile/me", authMiddleware, getUserByIdController);
+userRoute.get("/me", authMiddleware, getUserByIdController);
 
 export default userRoute;

@@ -122,6 +122,20 @@ export const getTodoByState = async (state) => {
     );
   }
 }
+
+export const addPomodoroInTodo = async (todoId, pomodoroId, opts) => {
+  try{
+    const todo = await todoRepository.addPomodoro(todoId, pomodoroId, opts);
+    if(!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
+    return todo;
+  }catch(e){
+    throw new ServiceError(
+      "Add pomodoro in todo error",
+      e.code || errorCodes.TODO.FAILD_TO_ADD_POMODORO_IN_TODO
+    );
+  }
+}
+
 // export const patchStateTodo = async (todoId, state) => {
 //   try {
 //     const todo = await todoRepository.patchStateTodo(todoId, state);

@@ -32,3 +32,7 @@ export const patchStateTodo = async (id, state) => {
 export const findTodoByState = async (state) => {
   return await Todo.find({ state });
 }
+
+export const addPomodoro = async (id, pomodoro, opts) => {
+  return await Todo.findByIdAndUpdate(id, { id_pomodoro: pomodoro }, { new: true, opts });
+}
