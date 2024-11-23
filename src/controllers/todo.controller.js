@@ -64,13 +64,13 @@ export const patchTodoController = async (req, res, next) => {
   } catch (e) {
     switch (e.code) {
       case errorCodes.TODO.TODO_NOT_FOUND:
-        next(createHttpError(404, "Todo not found"));
+        next(createHttpError(404, "To do no encontrado"));
         break;
       case errorCodes.TODO.FAILD_TO_UPDATE_TODO:
-        next(createHttpError(500, "Update todo error"));
+        next(createHttpError(500, "Error al actualizar el to do"));
         break;
       case errorCodes.TODO.INVALID_TODO_STATE:
-        next(createHttpError(400, "Invalid todo state"));
+        next(createHttpError(400, "Estado de to do inválido"));
         break;
       default:
         next(e);
@@ -81,9 +81,9 @@ export const patchTodoController = async (req, res, next) => {
 export const deleteTodoController = async (req, res, next) => {
   try {
     const todoId = req.params.id;
-    const todo = await TodoService.deleteTodo(todoId);
+    await TodoService.deleteTodo(todoId);
 
-    res.status(200).send(todo);
+    res.status(200).send({ message: "To do eliminado" });
   } catch (e) {
     switch (e.code) {
       case errorCodes.TODO.TODO_NOT_FOUND:
