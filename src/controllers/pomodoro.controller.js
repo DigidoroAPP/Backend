@@ -32,7 +32,7 @@ export const getAllPomodoros = async (req, res, next) => {
 
 export const getPomodoroByUser = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     const pomodoros = await PomodoroService.getPomodoroByUser(userId);
     res.status(200).send(pomodoros);
   } catch (e) {

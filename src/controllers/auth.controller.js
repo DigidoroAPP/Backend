@@ -13,9 +13,8 @@ export const registerController = async (req, res, next) => {
 
     await addPomodoroUser(newUser._id, pomodor._id);
 
-    res.status(201).send({message: "User created successfully"});
+    res.status(201).send({ message: "User created successfully" });
   } catch (e) {
-
     switch (e.code) {
       case errorCodes.AUTH.USER_ALREADY_EXISTS:
         next(createHttpError(400, "User already exists"));
@@ -59,7 +58,7 @@ export const loginController = async (req, res, next) => {
 
 export const logoutController = async (req, res, next) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.id;
     await logout(userId);
     res.status(200).send("Logout success");
   } catch (e) {
@@ -70,5 +69,15 @@ export const logoutController = async (req, res, next) => {
       default:
         next(e);
     }
+  }
+};
+
+export const meController = async (req, res, next) => {
+  try {
+    const { id, email, name } = req.user;
+    res.status(200).send({ id, email, name });
+    const todo = req.user.id;
+  } catch (e) {
+    next(createHttpError(500, "Get user error"));
   }
 };

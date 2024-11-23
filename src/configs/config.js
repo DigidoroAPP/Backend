@@ -10,4 +10,5 @@ export const config = {
   monogodb: validateEnv(process.env.MONGODB_URI, "MONGODB_URI"),
   jwSecret: validateEnv(process.env.JWT_SECRET, "JWT_SECRET"),
   salt: validateEnv(process.env.SALT_ROUNDS, "SALT_ROUNDS"),
+  prefix: validateEnv(process.env.PREFIX_TOKEN, "PREFIX"),
 };
