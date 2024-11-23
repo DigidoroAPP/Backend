@@ -32,4 +32,6 @@ userRoute.get(
   getUserByIdController
 );
 
+userRoute.get("/profile/me", authMiddleware, getUserByIdController);
+
 export default userRoute;

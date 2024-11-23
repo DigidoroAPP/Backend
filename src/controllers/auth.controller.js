@@ -72,12 +72,12 @@ export const logoutController = async (req, res, next) => {
   }
 };
 
-export const meController = async (req, res, next) => {
-  try {
-    const { id, email, name } = req.user;
-    res.status(200).send({ id, email, name });
-    const todo = req.user.id;
-  } catch (e) {
-    next(createHttpError(500, "Get user error"));
-  }
-};
+// export const meController = async (req, res, next) => {
+//   try {
+//     const { id, email, name } = req.user;
+//     res.status(200).send({ id, email, name });
+//     const todo = req.user.id;
+//   } catch (e) {
+//     next(createHttpError(500, "Get user error"));
+//   }
+// };

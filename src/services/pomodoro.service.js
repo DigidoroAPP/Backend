@@ -7,7 +7,6 @@ export const createPomodoro = async (pomodoro, opts) => {
     const newPomodoro = await pomodoroRepository.createPomodoro(pomodoro, opts);
     return newPomodoro;
   } catch (e) {
-    console.log(e)
     throw new ServiceError(
       "Create pomodoro error",
       e.code || errorCodes.POMODORO.CREATE_POMODORO_FAIL

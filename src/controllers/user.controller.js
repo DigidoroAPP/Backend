@@ -19,8 +19,9 @@ export const getAllUsersController = async (req, res, next) => {
 
 export const getUserByIdController = async (req, res, next) => {
     try{
-        const userId = req.params.userId;
+        const userId = req.user.id;
         const user = await getUserById(userId);
+
         res.status(200).send(user);
     }catch(e){
         switch(e){
@@ -33,5 +34,14 @@ export const getUserByIdController = async (req, res, next) => {
             default:
                 next(e);
         }
+    }
+}
+
+export const getMeController = async (req, res, next) => {
+    try{
+        const user = req.user;
+        res.status(200).send(user);
+    }catch(e){
+        next(createHttpError(500, "Get me error"));
     }
 }

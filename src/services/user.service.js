@@ -6,6 +6,7 @@ export const getUserById = async (userId) => {
   try {
     const user = await userReposiry.findUserById(userId);
     if (!user) throw new Error(errorCodes.USER.USER_NOT_EXIST);
+
     return user;
   } catch (e) {
     throw new ServiceError(
@@ -95,7 +96,7 @@ export const getTokenUser = async (userId)=>{
         const exisUser = await userReposiry.findUserById(userId);
         if(!exisUser) throw new Error(errorCodes.USER.USER_NOT_FOUND);
 
-        const token = await userReposiry.getToken(userId);
+        const token = await userReposiry.getToken(exisUser._id);
         return token;
     }catch(e){
         throw new ServiceError(

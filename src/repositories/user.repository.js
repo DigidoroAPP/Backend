@@ -6,12 +6,12 @@ export const createUser = async (user, opts)=>{
 }
 
 export const findUserById = async(id)=>{
-    return await User.findById(id, '-password -token');
+    return await User.findById(id, '_id name email roles ');
 }
 
 
 export const findAllUsers = async()=>{
-    return await User.find({}, '-password -token');
+    return await User.find({}, '-password -token').populate('id_todos').populate('id_pomodoro');
 }
 
 export const findUserByEmail = async(email)=>{
@@ -44,4 +44,3 @@ export const addPomodoro = async(id, pomodoroId, opts)=>{
 export const getToken = async(id)=>{
     return await User.findById(id, 'token');
 }
-

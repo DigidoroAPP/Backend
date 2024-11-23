@@ -62,7 +62,6 @@ export const patchTodoController = async (req, res, next) => {
     const todo = await TodoService.patchTodo(todoId, data);
     res.status(200).send(todo);
   } catch (e) {
-    console.log(e);
     switch (e.code) {
       case errorCodes.TODO.TODO_NOT_FOUND:
         next(createHttpError(404, "Todo not found"));
@@ -83,7 +82,7 @@ export const deleteTodoController = async (req, res, next) => {
   try {
     const todoId = req.params.id;
     const todo = await TodoService.deleteTodo(todoId);
-    
+
     res.status(200).send(todo);
   } catch (e) {
     switch (e.code) {
