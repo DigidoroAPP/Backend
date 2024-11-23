@@ -13,7 +13,7 @@ export const createTodo = async (req, res, next) => {
 
     res.status(201).send(newTodo);
   } catch (e) {
-    next(createHttpError(500, "Create todo error"));
+    next(createHttpError(500, "Error al crear el todo"));
   }
 };
 
@@ -42,7 +42,7 @@ export const getTodosByUser = async (req, res, next) => {
     const todos = await TodoService.getTodosByUserId(userId);
     res.status(200).send(todos);
   } catch (e) {
-    next(createHttpError(500, "Get todos by user error"));
+    next(createHttpError(500, "Error al obtener las to do's"));
   }
 };
 

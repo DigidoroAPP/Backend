@@ -26,10 +26,10 @@ export const getUserByIdController = async (req, res, next) => {
     }catch(e){
         switch(e){
             case errorCodes.USER.USER_FECH_FAIL:
-                next(createHttpError(500, "Get user error"));
+                next(createHttpError(500, "Error al obtener el usuario"));
                 break;
             case errorCodes.USER.USER_NOT_EXIST:
-                next(createHttpError(404, "User not found"));
+                next(createHttpError(404, "Usuario no encontrado"));    
                 break;
             default:
                 next(e);
@@ -42,6 +42,6 @@ export const getMeController = async (req, res, next) => {
         const user = req.user;
         res.status(200).send(user);
     }catch(e){
-        next(createHttpError(500, "Get me error"));
+        next(createHttpError(500, "Error al obtener el usuario"));
     }
 }

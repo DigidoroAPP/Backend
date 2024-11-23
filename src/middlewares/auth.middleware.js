@@ -6,24 +6,24 @@ import { config } from "../configs/config.js";
 export const authMiddleware = async (req, res, next) => {
   try {
     const { authorization } = req.headers;
-    if (!authorization) next(createHttpError(401, "Unauthorized"));
+    if (!authorization) next(createHttpError(401, "Token no proporcionado"));
 
     const [prefix, token] = authorization.split(" ");
 
-    if (prefix !== config.prefix) next(createHttpError(401, "Invalid prefix"));
-    if (!token) next(createHttpError(401, "Unauthorized"));
+    if (prefix !== config.prefix) next(createHttpError(401, "Prefix invalido"));
+    if (!token) next(createHttpError(401, "Token no proporcionado"));
 
     const payload = verifyToken(token);
-    if (!payload) next(createHttpError(401, "Unauthorized"));
+    if (!payload) next(createHttpError(401, "Token invalido"));
 
     const user = await getUserById(payload.id);
-    if (!user) next(createHttpError(401, "User not found"));
+    if (!user) next(createHttpError(401, "Usuario no encontrado"));
 
     const compareToken = await getTokenUser(payload.id);
     if (!compareToken)
-      return next(createHttpError(401, "User not found or logged out"));
+      return next(createHttpError(401, "Usuario no logueado "));
     if (compareToken.token !== token)
-      return next(createHttpError(401, "Invalid token"));
+      return next(createHttpError(401, "Token invalido"));
 
     req.user = user;
     req.token = token;
@@ -41,7 +41,7 @@ export const rolesMiddleware = (requiredRoles) => {
       if (!user) return next(createHttpError(401, "User not found"));
 
       if (!requiredRoles.some(role => user.roles.includes(role))) 
-        return next(createHttpError(403, "Forbidden"));
+        return next(createHttpError(403, "Accesso denegado por falta de permisos"));
 
       next();
     } catch (error) {

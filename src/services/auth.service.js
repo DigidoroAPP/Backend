@@ -24,7 +24,7 @@ export const register = async (user) => {
   } catch (e) {
     await session.abortTransaction();
     throw new ServiceError(
-      "Register error",
+      "Error al registrar usuario",
       e.code || errorCodes.AUTH.FAILD_TO_CREATE_USER
     );
   } finally {
