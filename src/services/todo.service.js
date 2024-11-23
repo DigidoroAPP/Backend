@@ -59,10 +59,7 @@ export const getTodosByUserId = async (userId) => {
 
 export const patchTodo = async (todoId, data) => {
   try {
-
-    // if(data.state  && !Object.values(TODO_STATE).includes(data.state))
-    //   throw new ServiceError("Invalid todo state", errorCodes.TODO.INVALID_TODO_STATE);
-
+    console.log(data);
     const todo = await todoRepository.updateTodo(todoId, data);
     if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
 
@@ -88,6 +85,17 @@ export const deleteTodo = async (todoId) => {
   }
 };
 
+export const getTodoByState = async (state) => {
+  try{
+    const todos = await todoRepository.findTodoByState(state);
+    return todos || [];
+  }catch(e){
+    throw new ServiceError(
+      "Get todo by state error",
+      e.code || errorCodes.TODO.FAILD_TO_GET_TODO_BY_STATE
+    );
+  }
+}
 // export const patchStateTodo = async (todoId, state) => {
 //   try {
 //     const todo = await todoRepository.patchStateTodo(todoId, state);

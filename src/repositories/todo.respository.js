@@ -28,3 +28,7 @@ export const deleteTodo = async (id) => {
 export const patchStateTodo = async (id, state) => {
   return await Todo.findByIdAndUpdate(id, { state }, { new: true });
 };
+
+export const findTodoByState = async (state) => {
+  return await Todo.find({ state });
+}

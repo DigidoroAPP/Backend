@@ -94,25 +94,35 @@ export const deleteTodoController = async (req, res, next) => {
   }
 };
 
-export const patchTodoInPomodoro = async (req, res, next) => {
+export const getTodoByStateController = async (req, res, next) => {
   try {
-    const pomodoroId = req.params.id;
-    const todoId = req.body.todoId;
-    const pomodoro = await TodoService.patchTodoInPomodoro(pomodoroId, todoId);
-    res.status(200).send(pomodoro);
+    const state = req.params.state;
+    const todos = await TodoService.getTodoByState(state);
+    res.status(200).send(todos);
   } catch (e) {
-    switch (e.code) {
-      case errorCodes.POMODORO.POMODORO_NOT_FOUND:
-        next(createHttpError(404, "Pomodoro not found"));
-        break;
-      case errorCodes.POMODORO.FAILD_TO_PATCH_TODO_IN_POMODORO:
-        next(createHttpError(500, "Patch todo in pomodoro error"));
-        break;
-      default:
-        next(e);
-    }
+    next(createHttpError(500, "Get todo by state error"));
   }
 };
+
+// export const patchTodoInPomodoro = async (req, res, next) => {
+//   try {
+//     const pomodoroId = req.params.id;
+//     const todoId = req.body.todoId;
+//     const pomodoro = await TodoService.patchTodoInPomodoro(pomodoroId, todoId);
+//     res.status(200).send(pomodoro);
+//   } catch (e) {
+//     switch (e.code) {
+//       case errorCodes.POMODORO.POMODORO_NOT_FOUND:
+//         next(createHttpError(404, "Pomodoro not found"));
+//         break;
+//       case errorCodes.POMODORO.FAILD_TO_PATCH_TODO_IN_POMODORO:
+//         next(createHttpError(500, "Patch todo in pomodoro error"));
+//         break;
+//       default:
+//         next(e);
+//     }
+//   }
+// };
 
 // export const patchStateTodo = async (req, res, next) => {
 //   try {
