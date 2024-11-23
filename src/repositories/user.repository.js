@@ -23,23 +23,23 @@ export const updateUser = async(id, user)=>{
 }
 
 export const deleteToken = async(id, opts)=>{
-    return await User.findByIdAndUpdate(id, {$set: {token: null}}, {new: true, session: opts.session});
+    return await User.findByIdAndUpdate(id, {$set: {token: null}}, {new: true,  opts});
 }
 
 export const deleteUser = async(id)=>{
     return await User.findByIdAndDelete(id);
 }
 
-export const addTodo = async(id, todoId)=>{
-    return await User.findByIdAndUpdate(id, {$push: {id_todos: todoId}}, {new: true});
+export const addTodo = async(id, todoId, opts)=>{
+    return await User.findByIdAndUpdate(id, {$push: {id_todos: todoId}}, {new: true, opts});
 }
 
 export const addToken = async(id, token, opts)=>{
-    return await User.findByIdAndUpdate(id,{$set: {token}}, {new: true, session: opts.session});
+    return await User.findByIdAndUpdate(id,{$set: {token}}, {new: true, opts});
 }
 
 export const addPomodoro = async(id, pomodoroId, opts)=>{
-    return await User.findByIdAndUpdate(id, {$set:{id_pomodoro: pomodoroId}}, {new: true, session: opts.session});
+    return await User.findByIdAndUpdate(id, {$set:{id_pomodoro: pomodoroId}}, {new: true, opts});
 }
 export const getToken = async(id)=>{
     return await User.findById(id, 'token');

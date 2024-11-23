@@ -65,9 +65,9 @@ export const deleteUser = async (userId)=>{
     }
 }
 
-export const addTodoUser = async (userId, todoId)=>{
+export const addTodoUser = async (userId, todoId, opts)=>{
     try{
-        const user = await userReposiry.addTodo(userId, todoId);
+        const user = await userReposiry.addTodo(userId, todoId, opts);
         return user;
     }catch(e){
         throw new ServiceError(

@@ -2,18 +2,28 @@ import { errorCodes } from "../utils/errors/error.code.js";
 import { ServiceError } from "../errors/servise.error.js";
 import * as todoRepository from "../repositories/todo.respository.js";
 import { getUserById } from "./user.service.js";
-import { TODO_STATE } from "../utils/constants/todoState.utils.js";
-
+import { addTodoUser } from "./user.service.js";
+import mongoose from "mongoose";
 
 export const createTodo = async (todo) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const newTodo = await todoRepository.createTodo(todo);
+    const opts = { session };
+    const newTodo = await todoRepository.createTodo(todo, opts);
+    await addTodoUser(todo.id_user, newTodo.id, opts);
+
+    await session.commitTransaction();
     return newTodo;
   } catch (e) {
+    await session.abortTransaction();
     throw new ServiceError(
       "Create todo error",
       e.code || errorCodes.TODO.FAILD_TO_ADD_TODO
     );
+  }finally{
+    await session.endSession();
   }
 };
 
@@ -58,30 +68,46 @@ export const getTodosByUserId = async (userId) => {
 };
 
 export const patchTodo = async (todoId, data) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    console.log(data);
-    const todo = await todoRepository.updateTodo(todoId, data);
+    const opts = { session };
+    const todo = await todoRepository.updateTodo(todoId, data, opts);
     if (!todo) throw new Error(errorCodes.TODO.TODO_NOT_FOUND);
 
+    await session.commitTransaction();
     return todo;
   } catch (e) {
+    await session.abortTransaction();
     throw new ServiceError(
       "Update todo error",
       e.code || errorCodes.TODO.FAILD_TO_UPDATE_TODO
     );
+  }finally{
+    await session.endSession();
   }
 };
 
 export const deleteTodo = async (todoId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    const todo = await todoRepository.deleteTodo(todoId);
+    const opts = { session };
+    const todo = await todoRepository.deleteTodo(todoId, opts);
     if (!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
+
+    await session.commitTransaction();
     return todo;
   } catch (e) {
+    await session.abortTransaction();
     throw new ServiceError(
       "Delete todo error",
       e.code || errorCodes.TODO.FAILD_TO_DELETE_TODO
     );
+  }finally{
+    await session.endSession();
   }
 };
 

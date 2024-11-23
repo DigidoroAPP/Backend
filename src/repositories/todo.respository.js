@@ -1,8 +1,8 @@
 import Todo from "../models/todo.model.js";
 
-export const createTodo = async (todo) => {
+export const createTodo = async (todo, opts) => {
   const newTodo = new Todo(todo);
-  return await newTodo.save();
+  return await newTodo.save(opts);
 };
 
 export const getTodos = async () => {
@@ -17,12 +17,12 @@ export const getTodoByUserId = async (userId) => {
   return await Todo.find({ id_user: userId });
 };
 
-export const updateTodo = async (id, todo) => {
-  return await Todo.findByIdAndUpdate(id, todo, { new: true });
+export const updateTodo = async (id, todo, opts) => {
+  return await Todo.findByIdAndUpdate(id, todo, { new: true, opts });
 };
 
-export const deleteTodo = async (id) => {
-  return await Todo.findByIdAndDelete(id);
+export const deleteTodo = async (id, opts) => {
+  return await Todo.findByIdAndDelete(id, {new: true, opts});
 };
 
 export const patchStateTodo = async (id, state) => {

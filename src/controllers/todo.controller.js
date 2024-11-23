@@ -9,7 +9,8 @@ export const createTodo = async (req, res, next) => {
     todo.id_user = req.user.id;
     
     const newTodo = await TodoService.createTodo(todo);
-    await addTodoUser(req.user.id, newTodo.id);
+    // await addTodoUser(req.user.id, newTodo.id);
+
     res.status(201).send(newTodo);
   } catch (e) {
     next(createHttpError(500, "Create todo error"));
@@ -82,6 +83,7 @@ export const deleteTodoController = async (req, res, next) => {
   try {
     const todoId = req.params.id;
     const todo = await TodoService.deleteTodo(todoId);
+    
     res.status(200).send(todo);
   } catch (e) {
     switch (e.code) {

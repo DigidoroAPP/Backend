@@ -14,7 +14,6 @@ todoRoute.post(
   runValidation,
   createTodo
 );
-//TODO: Implement patchTodoValidator
 todoRoute.patch("/:id", authMiddleware ,patchTodoValidator,idParamValidator, runValidation, patchTodoController);
 todoRoute.get("/", authMiddleware, getTodosByUser);
 todoRoute.delete("/:id", authMiddleware, deleteTodoController);
