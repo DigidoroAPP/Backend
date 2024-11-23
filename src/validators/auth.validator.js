@@ -3,7 +3,7 @@ import { body } from "express-validator";
 export const registerValidator = [
     body('name').notEmpty().withMessage('Name is required')
     .isString().withMessage('Name must be a string')
-    .isLength({min: 5}).withMessage('Name must be at least 5 characters'),
+    .isLength({min: 4}).withMessage('Name must be at least 5 characters'),
 
     body('email').notEmpty().withMessage('Email is required')
     .isString().withMessage('Email must be a string')

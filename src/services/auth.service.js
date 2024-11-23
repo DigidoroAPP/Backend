@@ -45,7 +45,7 @@ export const login = async (email, password) => {
         errorCodes.AUTH.INVALID_CREDENTIALS
       );
 
-    const token = createToken({ id: existUser._id });
+    const token = createToken({ id: existUser._id, roles: existUser.roles });
 
     if (!token)
       throw new ServiceError(
@@ -54,7 +54,7 @@ export const login = async (email, password) => {
       );
 
     await userReposiry.addToken(existUser._id, token.token, opts);
-    
+
     await session.commitTransaction();
 
     return token;

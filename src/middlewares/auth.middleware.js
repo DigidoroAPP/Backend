@@ -32,3 +32,19 @@ export const authMiddleware = async (req, res, next) => {
     next(createHttpError(401, "Unauthorized"));
   }
 };
+
+export const rolesMiddleware = (requiredRoles) => {
+  return async (req, res, next) => {
+    try {
+      const user = await getUserById(req.user.id);
+      if (!user) return next(createHttpError(401, "User not found"));
+
+      if (!requiredRoles.some(role => user.roles.includes(role))) 
+        return next(createHttpError(403, "Forbidden"));
+      
+      next();
+    } catch (error) {
+      next(error);
+    }
+  };
+}

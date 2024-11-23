@@ -59,7 +59,8 @@ export const logoutController = async (req, res, next) => {
   try {
     const userId = req.user.id;
     await logout(userId);
-    res.status(200).send("Logout success");
+
+    res.status(200).send({ message: "Logout successfully" });
   } catch (e) {
     switch (e) {
       case errorCodes.AUTH.FAILD_TO_LOGOUT:

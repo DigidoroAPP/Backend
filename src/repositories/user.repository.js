@@ -44,3 +44,4 @@ export const addPomodoro = async(id, pomodoroId, opts)=>{
 export const getToken = async(id)=>{
     return await User.findById(id, 'token');
 }
+
