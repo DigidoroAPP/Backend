@@ -22,8 +22,8 @@ export const updateUser = async(id, user)=>{
     return await User.findByIdAndUpdate(id, user, {new: true});
 }
 
-export const deleteToken = async(id)=>{
-    return await User.findByIdAndUpdate(id, {$set: {token: null}}, {new: true});
+export const deleteToken = async(id, opts)=>{
+    return await User.findByIdAndUpdate(id, {$set: {token: null}}, {new: true, session: opts.session});
 }
 
 export const deleteUser = async(id)=>{
@@ -34,8 +34,8 @@ export const addTodo = async(id, todoId)=>{
     return await User.findByIdAndUpdate(id, {$push: {id_todos: todoId}}, {new: true});
 }
 
-export const addToken = async(id, token)=>{
-    return await User.findByIdAndUpdate(id,{$set: {token}}, {new: true});
+export const addToken = async(id, token, opts)=>{
+    return await User.findByIdAndUpdate(id,{$set: {token}}, {new: true, session: opts.session});
 }
 
 export const addPomodoro = async(id, pomodoroId, opts)=>{

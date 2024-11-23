@@ -13,16 +13,15 @@ export const register = async (user) => {
   try {
     const opts = { session };
     const newUser = await userReposiry.createUser(user, opts);
-    console.log("final ", opts);
+
     const pomodor = await createPomodoro({ id_user: newUser._id }, opts);
 
-     await addPomodoroUser(newUser._id, pomodor._id, opts);
+    await addPomodoroUser(newUser._id, pomodor._id, opts);
 
     await session.commitTransaction();
 
     return newUser;
   } catch (e) {
-
     await session.abortTransaction();
     throw new ServiceError(
       "Register error",
@@ -34,7 +33,10 @@ export const register = async (user) => {
 };
 
 export const login = async (email, password) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
+    const opts = { session };
     const existUser = await userReposiry.findUserByEmail(email);
 
     if (!existUser || !(await existUser.comparePassword(password)))
@@ -43,33 +45,48 @@ export const login = async (email, password) => {
         errorCodes.AUTH.INVALID_CREDENTIALS
       );
 
-    const token = createToken({
-      id: existUser._id
-    });
+    const token = createToken({ id: existUser._id });
+
     if (!token)
       throw new ServiceError(
         "Token creation error",
         errorCodes.AUTH.FAILD_CREATE_TOKEN
       );
-    await userReposiry.addToken(existUser._id, token.token);
+
+    await userReposiry.addToken(existUser._id, token.token, opts);
+    
+    await session.commitTransaction();
 
     return token;
   } catch (e) {
+    await session.abortTransaction();
     throw new ServiceError(
       "Login error",
       e.code || errorCodes.AUTH.FAILD_TO_LOGIN
     );
+  } finally {
+    await session.endSession();
   }
 };
 
 export const logout = async (userId) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
   try {
-    await userReposiry.deleteToken(userId);
+    const opts = { session };
+    await userReposiry.deleteToken(userId, opts);
+
+    await session.commitTransaction();
+
     return "Logout success";
   } catch (e) {
+    await session.abortTransaction();
     throw new ServiceError(
       "Logout error",
       e.code || errorCodes.AUTH.FAILD_TO_LOGOUT
     );
+  } finally {
+    await session.endSession();
   }
 };

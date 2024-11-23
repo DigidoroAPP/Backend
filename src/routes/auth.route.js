@@ -9,7 +9,7 @@ const authRoute = Router();
 
 authRoute.post("/register", registerValidator, runValidation, registerController);
 authRoute.post("/login", loginValidator, runValidation, loginController);
-authRoute.post("/logout", logoutController);
+authRoute.delete("/", logoutController);
 authRoute.get("/me", authMiddleware, meController);
 
 export default authRoute;
