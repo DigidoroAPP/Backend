@@ -35,13 +35,10 @@ export const getPomodoroByUser = async (req, res, next) => {
 
 export const patchTodosInPomodorosController = async (req, res, next) => {
   try {
-    const pomodoroId = req.params.id;
+    const userId = req.user._id;
     const todos = req.body;
 
-    const pomodoro = await PomodoroService.patchTodosInPomodoros(
-      pomodoroId,
-      todos
-    );
+    const pomodoro = await PomodoroService.patchTodosInPomodoros(userId, todos);
     res.status(200).send(pomodoro);
   } catch (e) {
     switch (e.code) {

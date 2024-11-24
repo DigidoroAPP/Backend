@@ -37,23 +37,25 @@ export const patchTodosInPomodoros = async (pomodoroId, todos) => {
     const opts = { session };
     let updatePomo;
 
-    const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
+    const pomodoro = await pomodoroRepository.getPomodoroByUser(pomodoroId);
+
     if (!pomodoro)
       throw new ServiceError(
         "Pomodoro no encontrado",
         errorCodes.POMODORO.POMODORO_NOT_FOUND
       );
+
     for (const todo of todos.id_todos) {
       if (pomodoro.id_todos.includes(todo)) {
         updatePomo = await pomodoroRepository.removeTodo(
-          pomodoroId,
+          pomodoro._id,
           todo,
           opts
         );
-        await deletePomodoroInTodo(todo, pomodoroId, opts);
+        await deletePomodoroInTodo(todo, pomodoro._id, opts);
       } else {
-        updatePomo = await pomodoroRepository.addTodo(pomodoroId, todo, opts);
-        await addPomodoroInTodo(todo, pomodoroId, opts);
+        updatePomo = await pomodoroRepository.addTodo(pomodoro._id, todo, opts);
+        await addPomodoroInTodo(todo, pomodoro._id, opts);
       }
     }
     await session.commitTransaction();
@@ -77,7 +79,7 @@ export const patchPomodoroStanteAndTime = async (userId, state, time) => {
     const opts = { session };
     const userPomodoro = await pomodoroRepository.getPomodoroByUser(userId);
 
-    if (!userPomodoro || userPomodoro.length < 1)
+    if (!userPomodoro)
       throw new ServiceError(
         "Pomodoro no encontrado",
         errorCodes.POMODORO.POMODORO_NOT_FOUND
@@ -85,7 +87,7 @@ export const patchPomodoroStanteAndTime = async (userId, state, time) => {
 
     const pomodoroStateTime = assignPomodoroState(time, state);
     const pomodoro = await pomodoroRepository.patchPomodoroStanteAndTime(
-      userPomodoro[0]._id,
+      userPomodoro._id,
       pomodoroStateTime.state,
       pomodoroStateTime.time,
       opts

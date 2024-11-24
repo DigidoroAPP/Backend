@@ -10,7 +10,7 @@ import { runValidation } from "../middlewares/validator.middleware.js";
 
 const pomodoroRoute = Router();
 
-pomodoroRoute.get("/user", authMiddleware, getPomodoroByUser); //TODO: This route needs to implement authMiddleware
+pomodoroRoute.get("/user", authMiddleware, getPomodoroByUser);
 pomodoroRoute.patch(
   "/state-time",
   authMiddleware,
@@ -18,6 +18,6 @@ pomodoroRoute.patch(
   runValidation,
   patchPomodoroStanteAndTime
 );
-pomodoroRoute.patch("/:id", authMiddleware, patchTodosInPomodorosController);
+pomodoroRoute.patch("/", authMiddleware, patchTodosInPomodorosController);
 
 export default pomodoroRoute;
