@@ -14,7 +14,7 @@ export const getPomodoroById = async (id) => {
 };
 
 export const getPomodoroByUser = async (id) => {
-  return await Pomodoro.findOne({ id_user: id });
+  return await Pomodoro.findOne({ id_user: id }).populate("id_todos");
 };
 
 export const updatePomodoro = async (id, pomodoro, opts) => {
