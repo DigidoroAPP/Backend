@@ -1,7 +1,8 @@
 import { ServiceError } from "../errors/servise.error.js";
+import mongoose from "mongoose";
 import { errorCodes } from "../utils/errors/error.code.js";
 import * as pomodoroRepository from "../repositories/pomodor.repository.js";
-import { addPomodoroInTodo } from "./todo.service.js";
+import { addPomodoroInTodo, deletePomodoroInTodo } from "./todo.service.js";
 
 export const createPomodoro = async (pomodoro, opts) => {
   try {
@@ -11,31 +12,6 @@ export const createPomodoro = async (pomodoro, opts) => {
     throw new ServiceError(
       "Create pomodoro error",
       e.code || errorCodes.POMODORO.CREATE_POMODORO_FAIL
-    );
-  }
-};
-
-export const getPomodoroById = async (pomodoroId) => {
-  try {
-    const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
-    if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
-    return pomodoro;
-  } catch (e) {
-    throw new ServiceError(
-      "Get pomodoro error",
-      e.code || errorCodes.POMODORO.POMODORO_FECH_FAIL
-    );
-  }
-};
-
-export const getAllPomodoros = async () => {
-  try {
-    const pomodoros = await pomodoroRepository.getPomodoros();
-    return pomodoros;
-  } catch (e) {
-    throw new ServiceError(
-      "Get all pomodoros error",
-      e.code || errorCodes.POMODORO.FAILD_TO_GET_ALL_POMODOROS
     );
   }
 };
@@ -52,27 +28,88 @@ export const getPomodoroByUser = async (userId) => {
   }
 };
 
-export const updatePomodoro = async (pomodoroId, data) => {
+export const patchTodosInPomodoros = async (pomodoroId, todos) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
     const opts = { session };
-    const pomodoro = await pomodoroRepository.updatePomodoro(pomodoroId, data, opts);
+    let updatePomo;
+    
+    const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
-
+    for(const todo of todos.id_todos){
+      console.log(todo);
+      if(pomodoro.id_todos.includes(todo)) {
+        updatePomo = await pomodoroRepository.removeTodo(pomodoroId, todo, opts);
+        await deletePomodoroInTodo(todo, pomodoroId, opts);
+      }
+      else{
+        updatePomo=await pomodoroRepository.addTodo(pomodoroId, todo, opts);
+        await addPomodoroInTodo(todo, pomodoroId, opts);
+      }
+    }
     await session.commitTransaction();
-    return pomodoro;
+    return updatePomo;
   } catch (e) {
     await session.abortTransaction();
     throw new ServiceError(
-      "Update pomodoro error",
-      e.code || errorCodes.POMODORO.FAILD_TO_UPDATE_POMODORO
+      "Add todos to pomodoro error",
+      e.code || errorCodes.POMODORO.FAILD_TO_ADD_TODO
     );
   }finally {
     await session.endSession();
   }
-};
+}
+
+// export const getPomodoroById = async (pomodoroId) => {
+//   try {
+//     const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
+//     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
+//     return pomodoro;
+//   } catch (e) {
+//     throw new ServiceError(
+//       "Get pomodoro error",
+//       e.code || errorCodes.POMODORO.POMODORO_FECH_FAIL
+//     );
+//   }
+// };
+
+// export const getAllPomodoros = async () => {
+//   try {
+//     const pomodoros = await pomodoroRepository.getPomodoros();
+//     return pomodoros;
+//   } catch (e) {
+//     throw new ServiceError(
+//       "Get all pomodoros error",
+//       e.code || errorCodes.POMODORO.FAILD_TO_GET_ALL_POMODOROS
+//     );
+//   }
+// };
+
+
+
+// export const updatePomodoro = async (pomodoroId, data) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const opts = { session };
+//     const pomodoro = await pomodoroRepository.updatePomodoro(pomodoroId, data, opts);
+//     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
+
+//     await session.commitTransaction();
+//     return pomodoro;
+//   } catch (e) {
+//     await session.abortTransaction();
+//     throw new ServiceError(
+//       "Update pomodoro error",
+//       e.code || errorCodes.POMODORO.FAILD_TO_UPDATE_POMODORO
+//     );
+//   }finally {
+//     await session.endSession();
+//   }
+// };
 
 // export const deletePomodoro = async (pomodoroId) => {
 //   try {
@@ -87,56 +124,56 @@ export const updatePomodoro = async (pomodoroId, data) => {
 //   }
 // };
 
-export const addTodoInPomodoro = async (pomodoroId, todoId) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+// export const addTodoInPomodoro = async (pomodoroId, todoId) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
 
-  try {
-    const opts = { session };
-    const pomodoro = await pomodoroRepository.patchTodoInPomodoro(
-      pomodoroId,
-      todoId,
-      opts
-    );
-    if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
+//   try {
+//     const opts = { session };
+//     const pomodoro = await pomodoroRepository.patchTodoInPomodoro(
+//       pomodoroId,
+//       todoId,
+//       opts
+//     );
+//     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
 
-    await addPomodoroInTodo(todoId, pomodoroId, opts);
+//     await addPomodoroInTodo(todoId, pomodoroId, opts);
 
-    await session.commitTransaction();
-    return pomodoro;
-  } catch (e) {
-    await session.abortTransaction();
-    throw new ServiceError(
-      "Add todo to pomodoro error",
-      e.code || errorCodes.POMODORO.FAILD_TO_ADD_TODO
-    );
-  }finally {
-    await session.endSession();
-  }
-};
+//     await session.commitTransaction();
+//     return pomodoro;
+//   } catch (e) {
+//     await session.abortTransaction();
+//     throw new ServiceError(
+//       "Add todo to pomodoro error",
+//       e.code || errorCodes.POMODORO.FAILD_TO_ADD_TODO
+//     );
+//   }finally {
+//     await session.endSession();
+//   }
+// };
 
-export const patchStatePomodoro = async (pomodoroId, state) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
+// export const patchStatePomodoro = async (pomodoroId, state) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
 
-  try {
-    const opts = { session };
-    const pomodoro = await pomodoroRepository.patchStatePomodoro(
-      pomodoroId,
-      state,
-      opts
-    );
-    if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
+//   try {
+//     const opts = { session };
+//     const pomodoro = await pomodoroRepository.patchStatePomodoro(
+//       pomodoroId,
+//       state,
+//       opts
+//     );
+//     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
 
-    await session.commitTransaction();
-    return pomodoro;
-  } catch (e) {
-    await session.abortTransaction();
-    throw new ServiceError(
-      "Patch state pomodoro error",
-      e.code || errorCodes.POMODORO.FAILD_TO_UPDATE_POMODORO
-    );
-  }finally {
-    await session.endSession();
-  }
-};
+//     await session.commitTransaction();
+//     return pomodoro;
+//   } catch (e) {
+//     await session.abortTransaction();
+//     throw new ServiceError(
+//       "Patch state pomodoro error",
+//       e.code || errorCodes.POMODORO.FAILD_TO_UPDATE_POMODORO
+//     );
+//   }finally {
+//     await session.endSession();
+//   }
+// };

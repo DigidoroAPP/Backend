@@ -127,6 +127,7 @@ export const addPomodoroInTodo = async (todoId, pomodoroId, opts) => {
   try{
     const todo = await todoRepository.addPomodoro(todoId, pomodoroId, opts);
     if(!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
+    
     return todo;
   }catch(e){
     throw new ServiceError(
@@ -136,6 +137,19 @@ export const addPomodoroInTodo = async (todoId, pomodoroId, opts) => {
   }
 }
 
+export const deletePomodoroInTodo = async (todoId, opts) => {
+  try{
+    const todo = await todoRepository.removePomodoro(todoId, opts);
+    if(!todo) throw new ServiceError("Todo not found", errorCodes.TODO.TODO_NOT_FOUND);
+
+    return todo;
+  }catch(e){
+    throw new ServiceError(
+      "Delete pomodoro in todo error",
+      e.code || errorCodes.TODO.FAILD_TO_DELETE_POMODORO_IN_TODO
+    );
+  }
+}
 // export const patchStateTodo = async (todoId, state) => {
 //   try {
 //     const todo = await todoRepository.patchStateTodo(todoId, state);
