@@ -24,20 +24,10 @@ export const deletePomodoro = async (id) => {
   return await Pomodoro.findByIdAndDelete(id);
 };
 
-export const patchTodoInPomodoro = async (id, todo, opts) => {
-  return await Pomodoro.findByIdAndUpdate(
-    id,
-    { $push: { id_todos: todo } },
-    { new: true, opts }
-  );
-};
+export const addTodo = async (id, todo, opts) => {
+  return await Pomodoro.findByIdAndUpdate(id, {$addToSet: {id_todos: todo}}, {new: true, opts});
+}
 
-export const patchStatePomodoro = async (id, state, opts) => {
-  return await Pomodoro.findByIdAndUpdate(
-    id,
-    {
-      state,
-    },
-    { new: true , opts}
-  );
-};
+export const removeTodo = async (id, todo, opts) => {
+  return await Pomodoro.findByIdAndUpdate(id, {$pull: {id_todos: todo}}, {new: true, opts});
+}
