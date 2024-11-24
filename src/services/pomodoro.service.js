@@ -34,24 +34,23 @@ export const patchTodosInPomodoros = async (pomodoroId, todos) => {
 
   try {
     const opts = { session };
+    let updatePomo;
     
     const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
     if (!pomodoro) throw new Error(errorCodes.POMODORO.POMODORO_NOT_FOUND);
-    // console.log()
     for(const todo of todos.id_todos){
       console.log(todo);
       if(pomodoro.id_todos.includes(todo)) {
-        console.log('remove');
-        await pomodoroRepository.removeTodo(pomodoroId, todo, opts);
+        updatePomo = await pomodoroRepository.removeTodo(pomodoroId, todo, opts);
         await deletePomodoroInTodo(todo, pomodoroId, opts);
       }
       else{
-        await pomodoroRepository.addTodo(pomodoroId, todo, opts);
+        updatePomo=await pomodoroRepository.addTodo(pomodoroId, todo, opts);
         await addPomodoroInTodo(todo, pomodoroId, opts);
       }
     }
     await session.commitTransaction();
-    return pomodoro;
+    return updatePomo;
   } catch (e) {
     await session.abortTransaction();
     throw new ServiceError(

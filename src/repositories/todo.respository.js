@@ -34,6 +34,7 @@ export const findTodoByState = async (state) => {
 }
 
 export const addPomodoro = async (id, pomodoro, opts) => {
+  console.log(id, pomodoro);
   return await Todo.findByIdAndUpdate(id, { id_pomodoro: pomodoro }, { new: true, opts });
 }
 
