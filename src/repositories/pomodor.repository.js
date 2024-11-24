@@ -14,7 +14,7 @@ export const getPomodoroById = async (id) => {
 };
 
 export const getPomodoroByUser = async (id) => {
-  return await Pomodoro.find({ id_user: id });
+  return await Pomodoro.findOne({ id_user: id }).populate("id_todos");
 };
 
 export const updatePomodoro = async (id, pomodoro, opts) => {
@@ -25,9 +25,25 @@ export const deletePomodoro = async (id) => {
 };
 
 export const addTodo = async (id, todo, opts) => {
-  return await Pomodoro.findByIdAndUpdate(id, {$addToSet: {id_todos: todo}}, {new: true, opts});
-}
+  return await Pomodoro.findByIdAndUpdate(
+    id,
+    { $addToSet: { id_todos: todo } },
+    { new: true, opts }
+  );
+};
 
 export const removeTodo = async (id, todo, opts) => {
-  return await Pomodoro.findByIdAndUpdate(id, {$pull: {id_todos: todo}}, {new: true, opts});
-}
+  return await Pomodoro.findByIdAndUpdate(
+    id,
+    { $pull: { id_todos: todo } },
+    { new: true, opts }
+  );
+};
+
+export const patchPomodoroStanteAndTime = async (id, state, time, opts) => {
+  return await Pomodoro.findByIdAndUpdate(
+    id,
+    { state, time },
+    { new: true, opts }
+  );
+};
