@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
 import { hash, compare } from "bcrypt";
 import { config } from "../configs/config.js";
+import { ROLES_USER } from "../utils/constants/roles.utils.js";
 
 const userSchema = new Schema(
   {
@@ -10,6 +11,7 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
+      unique: true,
       required: true,
     },
     password: {
@@ -18,7 +20,7 @@ const userSchema = new Schema(
     },
     token:{
       type: String,
-      default: null,
+      default: '',
     }
     ,
     id_pomodoro: {
@@ -31,6 +33,13 @@ const userSchema = new Schema(
         ref: "Todo",
       },
     ],
+    roles:
+      {
+        type: [String],
+        enum:[ROLES_USER.ADMIN, ROLES_USER.USER, ROLES_USER.MODERATOR, ROLES_USER.SYSADMIN],
+        default: ROLES_USER.USER,
+      }
+    
   },
   { timestamps: true }
 );

@@ -6,6 +6,7 @@ export const getUserById = async (userId) => {
   try {
     const user = await userReposiry.findUserById(userId);
     if (!user) throw new Error(errorCodes.USER.USER_NOT_EXIST);
+
     return user;
   } catch (e) {
     throw new ServiceError(
@@ -27,36 +28,65 @@ export const getAllUsers = async () => {
     }
 };
 
-
-export const updateUser =async(userId, data)=>{
+export const existUserByEmail = async (email) => {
     try{
-        const user = await userReposiry.updateUser(userId, data);
-        if(!user) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+        const user = await userReposiry.findUserByEmail(email);
         return user;
     }catch(e){
+        throw new ServiceError(
+            "Find user by email error",
+            e.code || errorCodes.USER.USER_FECH_FAIL
+        );
+    }
+}
+
+export const updateUser =async(userId, data)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try{
+        const opts = {session};
+        const user = await userReposiry.updateUser(userId, data, opts);
+        if(!user) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
+        await session.commitTransaction();
+        return user;
+    }catch(e){
+        await session.abortTransaction
         throw new ServiceError(
             "Update user error",
             e.code || errorCodes.USER.FAILD_TO_UPDATE_USER
         );
+    }finally{
+        await session.endSession();
     }
 }
 
 export const deleteUser = async (userId)=>{
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
     try{
-        const user = await userReposiry.deleteUser(userId);
+        const opts = {session};
+        const user = await userReposiry.deleteUser(userId, opts);
         if(!user) throw new Error(errorCodes.USER.USER_NOT_FOUND);
+
+        await session.commitTransaction();
         return user;
     }catch(e){
+        await session.abortTransaction();
         throw new ServiceError(
             "Delete user error",
             e.code || errorCodes.USER.FAILD_TO_DELETE_USER
         );
+    }finally{
+        await session.endSession();
     }
 }
 
-export const addTodoUser = async (userId, todoId)=>{
+export const addTodoUser = async (userId, todoId, opts)=>{
     try{
-        const user = await userReposiry.addTodo(userId, todoId);
+        const user = await userReposiry.addTodo(userId, todoId, opts);
         return user;
     }catch(e){
         throw new ServiceError(
@@ -66,9 +96,10 @@ export const addTodoUser = async (userId, todoId)=>{
     }
 }
 
-export const addPomodoroUser = async (userId, pomodoroId)=>{
+export const addPomodoroUser = async (userId, pomodoroId, opts)=>{
     try{
-        const user = await userReposiry.addPomodoro(userId, pomodoroId);
+        const user = await userReposiry.addPomodoro(userId, pomodoroId, opts);
+
         return user;
     }catch(e){
         throw new ServiceError(
@@ -83,7 +114,7 @@ export const getTokenUser = async (userId)=>{
         const exisUser = await userReposiry.findUserById(userId);
         if(!exisUser) throw new Error(errorCodes.USER.USER_NOT_FOUND);
 
-        const token = await userReposiry.getToken(userId);
+        const token = await userReposiry.getToken(exisUser._id);
         return token;
     }catch(e){
         throw new ServiceError(

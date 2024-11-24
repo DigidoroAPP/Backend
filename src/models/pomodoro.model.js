@@ -18,7 +18,7 @@ const pomodoroSchema = new Schema(
       ref: "User",
       required: true,
     },
-    task_list: [
+    id_todos: [
       {
         type: Schema.Types.ObjectId,
         ref: "Todo",

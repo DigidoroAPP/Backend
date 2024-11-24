@@ -15,6 +15,10 @@ export const createTodoValidator = [
 ]
 
 export const patchTodoValidator = [
+
+    param('id').notEmpty().withMessage('Id is required')
+    .isMongoId().withMessage('Id must be a mongoId string'),
+
     body('state').optional().notEmpty().withMessage('State is required')
     .isString().withMessage('State must be a string')
     .isIn([TODO_STATE.PENDING, TODO_STATE.COMPLETE, TODO_STATE.PROGRESS]).withMessage('State must be one of pending, complete, progress'),
