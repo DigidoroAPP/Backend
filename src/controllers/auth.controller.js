@@ -37,7 +37,7 @@ export const loginController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     const token = await login(email, password);
-    
+
     res.status(200).send(token);
   } catch (e) {
     switch (e.code) {
@@ -72,13 +72,3 @@ export const logoutController = async (req, res, next) => {
     }
   }
 };
-
-// export const meController = async (req, res, next) => {
-//   try {
-//     const { id, email, name } = req.user;
-//     res.status(200).send({ id, email, name });
-//     const todo = req.user.id;
-//   } catch (e) {
-//     next(createHttpError(500, "Get user error"));
-//   }
-// };
