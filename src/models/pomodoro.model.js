@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { POMODORO_STATE } from "../utils/constants/pomodoroStates.utils";
+import { POMODORO_STATE } from "../utils/constants/pomodoroStates.utils.js";
 
 const pomodoroSchema = new Schema(
   {
@@ -18,7 +18,7 @@ const pomodoroSchema = new Schema(
       ref: "User",
       required: true,
     },
-    task_list: [
+    id_todos: [
       {
         type: Schema.Types.ObjectId,
         ref: "Todo",

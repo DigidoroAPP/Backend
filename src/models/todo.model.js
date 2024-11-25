@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { TODO_STATE } from "../utils/constants/todoState.utils";
+import { TODO_STATE } from "../utils/constants/todoState.utils.js";
 
 const todoSchema = new Schema(
   {

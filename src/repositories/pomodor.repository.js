@@ -1,8 +1,8 @@
 import Pomodoro from "../models/pomodoro.model.js";
 
-export const createPomodoro = async (pomodoro) => {
+export const createPomodoro = async (pomodoro, opts) => {
   const newPomodoro = new Pomodoro(pomodoro);
-  return await newPomodoro.save();
+  return await newPomodoro.save(opts);
 };
 
 export const getPomodoros = async () => {
@@ -14,30 +14,36 @@ export const getPomodoroById = async (id) => {
 };
 
 export const getPomodoroByUser = async (id) => {
-  return await Pomodoro.find({ id_user: id });
+  return await Pomodoro.findOne({ id_user: id }).populate("id_todos");
 };
 
-export const updatePomodoro = async (id, pomodoro) => {
-  return await Pomodoro.findByIdAndUpdate(id, pomodoro, { new: true });
+export const updatePomodoro = async (id, pomodoro, opts) => {
+  return await Pomodoro.findByIdAndUpdate(id, pomodoro, { new: true, opts });
 };
 export const deletePomodoro = async (id) => {
   return await Pomodoro.findByIdAndDelete(id);
 };
 
-export const patchTodoInPomodoro = async (id, todo) => {
+export const addTodo = async (id, todo, opts) => {
   return await Pomodoro.findByIdAndUpdate(
     id,
-    { $push: { id_todos: todo } },
-    { new: true }
+    { $addToSet: { id_todos: todo } },
+    { new: true, opts }
   );
 };
 
-export const patchStatePomodoro = async (id, state) => {
+export const removeTodo = async (id, todo, opts) => {
   return await Pomodoro.findByIdAndUpdate(
     id,
-    {
-      state,
-    },
-    { new: true }
+    { $pull: { id_todos: todo } },
+    { new: true, opts }
+  );
+};
+
+export const patchPomodoroStanteAndTime = async (id, state, time, opts) => {
+  return await Pomodoro.findByIdAndUpdate(
+    id,
+    { state, time },
+    { new: true, opts }
   );
 };
