@@ -29,6 +29,32 @@ export const getPomodoroByUser = async (userId) => {
   }
 };
 
+export const removeTodoInPomodoros = async (pomodoroId, todoId, opts) => {
+  try {
+    const pomodoro = await pomodoroRepository.getPomodoroById(pomodoroId);
+
+    if (!pomodoro)
+      throw new ServiceError(
+        "Pomodoro no encontrado",
+        errorCodes.POMODORO.POMODORO_NOT_FOUND
+      );
+
+    const updatePomo = await pomodoroRepository.removeTodo(
+      pomodoro._id,
+      todoId,
+      opts
+    );
+    await deletePomodoroInTodo(todoId, pomodoro._id, opts);
+
+    return updatePomo;
+  } catch (e) {
+    throw new ServiceError(
+      "Remove todo in pomodoro error",
+      e.code || errorCodes.POMODORO.FAILD_TO_REMOVE_TODO
+    );
+  }
+};
+
 export const patchTodosInPomodoros = async (pomodoroId, todos) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -46,17 +72,8 @@ export const patchTodosInPomodoros = async (pomodoroId, todos) => {
       );
 
     for (const todo of todos.id_todos) {
-      if (pomodoro.id_todos.includes(todo)) {
-        updatePomo = await pomodoroRepository.removeTodo(
-          pomodoro._id,
-          todo,
-          opts
-        );
-        await deletePomodoroInTodo(todo, pomodoro._id, opts);
-      } else {
-        updatePomo = await pomodoroRepository.addTodo(pomodoro._id, todo, opts);
-        await addPomodoroInTodo(todo, pomodoro._id, opts);
-      }
+      updatePomo = await pomodoroRepository.addTodo(pomodoro._id, todo, opts);
+      await addPomodoroInTodo(todo, pomodoro._id, opts);
     }
     await session.commitTransaction();
     return updatePomo;
